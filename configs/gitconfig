@@ -1,0 +1,9 @@
+[user]
+	email = jtsagata@gmail.com
+	name = Ioannis Tsagkatakis
+
+[alias]
+    root = rev-parse --show-toplevel
+
+[core]
+	excludesFile = ~/.gitignore
