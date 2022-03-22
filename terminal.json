@@ -1,0 +1,22 @@
+{
+    "vscode": {
+        "day": "atelier-lakeside-light",
+        "night": "github-dark"
+    },
+    "nautilus": {
+        "day": "atelier-lakeside-light",
+        "night": "github-dark"
+    },
+    "gnome": {
+        "day": "atelier-lakeside-light",
+        "night": "github-dark"
+    },
+    "JetBrains": {
+        "day": "atelier-lakeside-light",
+        "night": "github-dark"
+    },
+    "DEFAULT": {
+        "day": "atelier-lakeside-light",
+        "night": "github-dark"
+    }
+}
