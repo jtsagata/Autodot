@@ -118,8 +118,3 @@ fi
 
 export TERMINAL_SHELL="bash"
 source ~/.asfodelus/common.sh
-
-
-eval "$(starship init bash)"
-
-eval "$(zoxide init bash)"
