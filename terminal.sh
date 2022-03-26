@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+#SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+SCRIPT_DIR="${HOME}/.asfodelus"
 
+# Normalize terminal name
 if [[ "${TERMINAL_EMULATOR}" == "JetBrains-JediTerm" ]]; then
     export TERMINAL_PROG="JetBrains"
 elif [[ "${TERM_PROGRAM}" == "vscode" ]]; then
@@ -10,7 +12,6 @@ elif [[ -v INSIDE_NAUTILUS_PYTHON ]]; then
 else
     export TERMINAL_PROG="gnome"
 fi
-
 
 function debug_term(){
     local theme
@@ -32,10 +33,11 @@ function load_theme(){
     else 
         term_theme=$(jq -r ".${TERMINAL_PROG}.day" < "${SCRIPT_DIR}/terminal.json")
     fi
+    # TODO: Add fallback 
     theme.sh "${term_theme}"
     export TERMINAL_THEME="${term_theme}"
 }
 
 #load_last_theme
 load_theme
-debug_term
+#debug_term

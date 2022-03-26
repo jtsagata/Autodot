@@ -1,6 +1,7 @@
 # shellcheck shell=bash
 # shellcheck disable=SC2034,SC1091
-SCRIPT_DIR=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
+#SCRIPT_DIR=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
+SCRIPT_DIR="${HOME}/.asfodelus"
 
 function path_add () {
     if ! echo "$PATH" | /bin/grep -Eq "(^|:)$1($|:)" ; then
@@ -46,9 +47,6 @@ eval "$(zoxide init "${TERMINAL_SHELL}")"
 # Support .env, .envrc
 eval "$(direnv hook "${TERMINAL_SHELL}")"
 
-
-# echo "On ${TERMINAL_SHELL}"
-
 alias ls='lsd'
 alias powerman='tio -b 57600 /dev/ttyUSB0'
 alias psc='ps xawf -eo pid,user,cgroup,args'
@@ -57,4 +55,8 @@ function make_script() {
     local script=${1-new_tool}
     printf "#!/usr/bin/env bash\n\n" >> "$script"
     chmod +x "$script"
+}
+
+function pico_load() {
+    openocd -f interface/picoprobe.cfg -f target/rp2040.cfg -c "program $1 verify reset exit"
 }
