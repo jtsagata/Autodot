@@ -1,7 +1,4 @@
 # shellcheck shell=bash
-# shellcheck disable=SC2034,SC1091
-#SCRIPT_DIR=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
-SCRIPT_DIR="${HOME}/.asfodelus"
 
 function path_add () {
     if ! echo "$PATH" | /bin/grep -Eq "(^|:)$1($|:)" ; then
@@ -13,9 +10,10 @@ function path_add () {
     fi
 }
 
-source "${SCRIPT_DIR}/terminal.sh"
+source "${automation_dir}/terminal.sh"
 
-path_add "${HOME}/.asfodelus/scripts"
+path_add "${automation_dir}/scripts"
+path_add "${automation_dir}/extras"
 
 
 
@@ -39,24 +37,27 @@ function blastoff() {
 starship_precmd_user_func="blastoff"
 
 # A nice prompt
-eval "$(starship init "${TERMINAL_SHELL}")"
+eval "$(starship init "${terminal_shell}")"
 
 # z command not cd
-eval "$(zoxide init "${TERMINAL_SHELL}")"
+eval "$(zoxide init "${terminal_shell}")"
 
 # Support .env, .envrc
-eval "$(direnv hook "${TERMINAL_SHELL}")"
+eval "$(direnv hook "${terminal_shell}")"
 
 alias ls='lsd'
-alias powerman='tio -b 57600 /dev/ttyUSB0'
+# alias powerman='tio -b 57600 /dev/ttyUSB0'
 alias psc='ps xawf -eo pid,user,cgroup,args'
+alias myIP="ip -j addr show dev enp5s0 | jq -r  '.[].addr_info[0].local'"
 
 function make_script() {
     local script=${1-new_tool}
-    printf "#!/usr/bin/env bash\n\n" >> "$script"
+    printf "#!/usr/bin/env bash\n\n" > "$script"
     chmod +x "$script"
 }
 
 function pico_load() {
     openocd -f interface/picoprobe.cfg -f target/rp2040.cfg -c "program $1 verify reset exit"
 }
+
+

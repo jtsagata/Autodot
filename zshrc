@@ -10,5 +10,5 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
   source "${ZDOTDIR:-$HOME}/.zprezto/init.zsh"
 fi
 
-export TERMINAL_SHELL="zsh"
+export terminal_shell="zsh"
 source ~/.asfodelus/common.sh

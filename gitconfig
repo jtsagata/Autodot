@@ -1,0 +1,23 @@
+[user]
+	email = tsagatakis@protonmail.com
+	name = Ioannis Tsagkatakis
+
+[alias]
+    root = rev-parse --show-toplevel
+
+[core]
+	excludesFile = ~/.gitignore
+	autocrlf = input
+[init]
+	defaultBranch = main
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
