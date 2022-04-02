@@ -8,6 +8,9 @@ rm ${HOME}/.gitconfig
 ln ${script_dir}/bashrc    ${HOME}/.bashrc
 ln ${script_dir}/zshrc     ${HOME}/.zshrc
 ln ${script_dir}/gitconfig ${HOME}/.gitconfig
+ln ${script_dir}/tmux.conf ${HOME}/.tmux.conf
 
 mkdir -p ~/.config 
 ln  ${script_dir}/configs/starship.toml ~/.config
+
+

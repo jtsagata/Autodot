@@ -1,0 +1,235 @@
+#!/bin/bash
+# Save as /usr/local/bin/audio_switch and make it executable
+# Info: https://pipewire-debian.github.io/pipewire-debian/
+
+set -o errexit
+set -o pipefail
+
+RESET='\e[0m'
+RED='\e[31m'
+GREEN='\e[32m'
+OK="${GREEN}[OK]${RESET}"
+ERROR="${RED}[ERROR]${RESET}"
+SOUND_FILE=/usr/share/sounds/alsa/Front_Center.wav
+
+function cmd_repos() {
+    # For PipeWire
+    sudo add-apt-repository ppa:pipewire-debian/pipewire-upstream -y
+    # For WirePlumber
+    sudo add-apt-repository ppa:pipewire-debian/wireplumber-upstream
+}
+
+function cmd_install() {
+    sudo apt-get update
+    sudo apt install expect -y
+    sudo apt install -y pipewire gstreamer1.0-pipewire pipewire-pulse libspa-0.2-bluetooth libspa-0.2-jack pipewire-media-session
+    sudo apt install -y gir1.2-wp-0.4 wireplumber wireplumber-doc
+    if [[ ! -d /etc/pipewire/ ]]; then
+        sudo cp -vRa /usr/share/pipewire /etc/
+    fi
+}
+
+# https://blog.robertelder.org/bash-one-liner-compose-music/
+function cmd_music() {
+    local player
+    if [[ "$1" == "sad" ]]; then
+        player="pacat"
+    else
+        player="aplay -c 2 -f S32_LE -r 16000"
+    fi
+    head -c 4 /dev/urandom | hexdump -v -e '/1 "%u\n"' | \
+    awk '{ split("0,2,3,5,7,8,10,12",a,","); for (i = 0; i < 1; i+= 0.0001) printf("%08X\n", 100*sin(1382*exp((a[$1%8+1]/12)*log(2))*i)) }' | \
+    xxd -r -p | $player 2> /dev/null
+}
+
+function enable_service() {
+    local service
+    local code
+    local retry
+    service="$1"
+    systemctl --user --quiet --now enable "${service}"
+    state=$(systemctl show --user -p SubState "$service" | sed 's/SubState=//g')
+    code="${ERROR}" && systemctl is-active --user --quiet "${service}" && code="${OK}"
+    echo -e "    ${code} Service ${service} is ${state}"
+    if [[ "$code" == "${ERROR}" ]]; then
+        if [[ "$retry" == "retry" ]]; then
+            echo "============================================="
+            systemctl --user --no-pager status "${service}"
+            echo "============================================="
+        else
+            sleep 2
+            enable_service "$service" retry
+        fi
+    fi
+}
+
+function restart_service() {
+    local service
+    local code
+    service="$1"
+    systemctl --user --quiet restart "${service}"
+    state=$(systemctl show --user -p SubState "$service" | sed 's/SubState=//g')
+    code="${ERROR}" && systemctl is-active --user --quiet "${service}" && code="${OK}"
+    echo -e "    ${code} Service ${service} is ${state}"
+}
+
+function disable_service() {
+    local service
+    local code
+    local retry
+    service="$1"
+    retry="$2"
+    systemctl --user --quiet --now disable "${service}"
+    state=$(systemctl show --user -p SubState "$service" | sed 's/SubState=//g')
+    code="${ERROR}" && systemctl is-active --user --quiet "${service}" || code="${OK}"
+    echo -e "    ${code} Service ${service} is ${state}"
+    if [[ "$code" == "${ERROR}" ]]; then
+        if [[ "$retry" == "retry" ]]; then
+            echo "============================================="
+            systemctl --user --no-pager status "${service}"
+            echo "============================================="
+        else
+            sleep 2
+            disable_service "$service" retry
+        fi
+    fi
+}
+
+function reload_and_check() {
+    local server
+    systemctl --user daemon-reload
+    server=$(pactl info | grep '^Server Name')
+    echo -e "-- Testing ${GREEN}$server${RESET}"
+    aplay "${SOUND_FILE}" 2>/dev/null
+    echo "Did you hear the sound?"
+    echo "-- Sink and volume info"
+    cmd_vinfo
+}
+
+function cmd_pulseaudio() {
+    local what
+    what="${1-on}"
+    shift || true
+    case "$what" in
+    "on")
+        cmd_pipewire off
+        echo "-- Enable PulseAudio"
+        systemctl --quiet --user unmask pulseaudio
+        enable_service pulseaudio.socket
+        enable_service pulseaudio.service
+        ;;
+    "restart")
+        echo "-- Restarting PulseAudio"
+        restart_service pulseaudio
+        echo "-- Service and sockets status"
+        cmd_services
+        echo
+        ;;
+    "off")
+        echo "-- Disable PulseAudio"
+        disable_service pulseaudio.socket
+        disable_service pulseaudio.service
+        systemctl --quiet --user mask pulseaudio
+        ;;
+    esac
+    if [[ "$what" != "off" ]]; then reload_and_check; fi
+}
+
+function cmd_pipewire() {
+    local what="${1-on}"
+    case "$what" in
+    "on")
+        cmd_pulseaudio off
+        echo "-- Enable Pipewire"
+        enable_service pipewire.socket
+        enable_service pipewire.service
+        enable_service pipewire-pulse.socket
+        enable_service pipewire-pulse.service
+        enable_service wireplumber.service
+        ;;
+    "restart")
+        echo "-- Restarting Pipewire"
+        restart_service pipewire
+        restart_service wireplumber
+        echo "-- Service and sockets status"
+        cmd_services
+        echo
+        ;;
+    "off")
+        echo "-- Disable Pipewire"
+        disable_service pipewire-pulse.socket
+        disable_service pipewire.socket
+        disable_service wireplumber.service
+        disable_service pipewire-pulse.service
+        disable_service pipewire.service
+        ;;
+    esac
+    if [[ "$what" != "off" ]]; then reload_and_check; fi
+}
+
+function cmd_check() {
+    server=$(pactl info | grep '^Server Name')
+    if [[ "$server" =~ "PipeWire" ]]; then
+        echo -ne "*** Running on ${GREEN}Pipewire${RESET}... "
+    else
+        echo -ne "*** Running on ${GREEN}PulseAudio${RESET}..."
+    fi
+    aplay /usr/share/sounds/alsa/Front_Center.wav 2>/dev/null
+    echo "Did you hear the sound?"
+}
+
+function cmd_restart() {
+    server=$(pactl info | grep '^Server Name')
+    if [[ "$server" =~ "PipeWire" ]]; then
+        cmd_pipewire restart
+    else
+        cmd_pulseaudio restart
+    fi
+}
+
+function cmd_help() {
+    echo "$(basename "${BASH_SOURCE[0]}"): Install pipewire and sound switcher source"
+    echo "   repos:       Enable PPAs"
+    echo "   install:     Install Pipewire"
+    echo "   pipewire:    Use Pipewire"
+    echo "   pulseaudio:  Use PuleAudio"
+    echo "   restart:     Restart audio service"
+    echo "   check:       Check sound"
+    echo "   music:       Play some music"
+    echo "   vinfo:       Show sink and volume info"
+    echo "   services:    Show services status"
+}
+
+# shellcheck disable=SC2120
+function cmd_services() {
+    echo -e "${GREEN}●${RESET} Sockets:"
+    unbuffer systemctl --user list-sockets --no-pager $1 "*wire*" "*pulse*" | sed -e '/^$/,$d'
+    echo
+    echo -e "${GREEN}●${RESET} Services:"
+    unbuffer systemctl --user list-units --no-pager --type=service "$1" "*wire*" "*pulse*" | sed -e '/^$/,$d'
+}
+
+function cmd_vinfo() {
+    local vol
+    local sink=$(pactl get-default-sink)
+    printf  "%s Default Sink: ${GREEN}%s${RESET}\n" "--" "$(pactl get-default-sink | rev | cut -d'.' -f 1 | rev)"
+    local volumes=$(pactl get-sink-volume @DEFAULT_SINK@ | sed -e 's/^Volume: //g')
+    echo "-- Volumes"
+    # Show volumes one line each
+    IFS=',' read -ra vol <<< "$volumes"
+    for i in "${vol[@]}"; do
+       local trim=$(echo "$i" | xargs)
+       printf "${GREEN}%16s${RESET}:%s\n" "$(echo "$trim" | cut -d: -f1)" "$(echo "$trim" | cut -d: -f2 | cut -d/ -f2)"
+    done
+}
+
+### Run the command
+command=${1-help}
+shift || true
+func=cmd_"${command}"
+if [ "$(type -t "$func")" == "function" ]; then
+    $func "$@"
+else
+    printf "Unknown command %s\n" "$command"
+    cmd_help
+fi

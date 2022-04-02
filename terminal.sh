@@ -22,7 +22,7 @@ function theme_info(){
 
 function load_last_theme() {
     theme=$(theme.sh -l|tail -n1)
-    theme.sh "$theme"
+    ${automation_dir}/extras/theme.sh "$theme"
     export TERMINAL_THEME=$theme
 }
 
@@ -34,7 +34,7 @@ function load_theme(){
         term_theme=$(jq -r ".${terminal_program}.day" < "${automation_dir}/terminal.json")
     fi
     # TODO: Add fallback 
-    theme.sh "${term_theme}"
+    ${automation_dir}/extras/theme.sh "${term_theme}"
 }
 
 load_theme
