@@ -50,6 +50,7 @@ alias ls='lsd'
 alias psc='ps xawf -eo pid,user,cgroup,args'
 alias myIP="ip -j addr show dev enp5s0 | jq -r  '.[].addr_info[0].local'"
 alias dnsflush="sudo systemd-resolve --flush-caches"
+alias neofetch='neofetch --iterm2 ~/Automation/configs/pop_os.png'
 
 function make_script() {
     local script=${1-new_tool}
