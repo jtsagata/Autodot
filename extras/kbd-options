@@ -1,0 +1,32 @@
+#!/usr/bin/python3
+
+# Usefull 
+#    keypad:pointerkeys   Shift + Num Lock enables PointerKeys
+#    kpdl:dot             Legacy key with dot
+#    kpdl:comma           Legacy key with comma 
+
+setxkbmap='/usr/bin/setxkbmap'
+
+import subprocess
+import sys
+
+if len(sys.argv) == 1 :
+    subprocess.run([setxkbmap, '-query'])
+    sys.exit()
+
+lines = subprocess.run([setxkbmap, '-query'], stdout=subprocess.PIPE).stdout.decode('utf-8')
+
+xkb_options={}
+for line in list(filter(None, lines.split("\n"))):
+    t = line.split();
+    xkb_options[t[0].split(":")[0]]= t[1]
+
+option_list = xkb_options['options'].split(",")
+new_options = list(filter(lambda x: not x.startswith("kpdl"),option_list))
+
+option_parse=sys.argv[1].split(":")
+new_options = list(filter(lambda x: not x.startswith(option_parse[0]),option_list))
+new_options.append(sys.argv[1])
+
+subprocess.run([setxkbmap, '-option'])
+subprocess.run([setxkbmap, '-option', ','.join(new_options)])

@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Devilspie2
+Comment=Window Placement Automation
+
+Exec=devilspie2
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true

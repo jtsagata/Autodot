@@ -49,6 +49,7 @@ alias ls='lsd'
 # alias powerman='tio -b 57600 /dev/ttyUSB0'
 alias psc='ps xawf -eo pid,user,cgroup,args'
 alias myIP="ip -j addr show dev enp5s0 | jq -r  '.[].addr_info[0].local'"
+alias dnsflush="sudo systemd-resolve --flush-caches"
 
 function make_script() {
     local script=${1-new_tool}

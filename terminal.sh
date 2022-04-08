@@ -30,8 +30,10 @@ function load_theme(){
     local theme=$(dconf read /org/gnome/desktop/interface/gtk-theme)
     if [[ "${theme}" =~ dark ]]; then
         term_theme=$(jq -r ".${terminal_program}.night" < "${automation_dir}/terminal.json")
+        alias mc='mc --skin=seasons-winder16M'
     else 
         term_theme=$(jq -r ".${terminal_program}.day" < "${automation_dir}/terminal.json")
+        alias mc='mc --skin=seasons-summer16M'
     fi
     # TODO: Add fallback 
     ${automation_dir}/extras/theme.sh "${term_theme}"

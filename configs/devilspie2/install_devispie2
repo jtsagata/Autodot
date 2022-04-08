@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+script_dir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
+
+function cmd_system() {
+    sudo apt install -y devilspie2
+}
+
+function cmd_local() {
+    ln -s ${script_dir}/lua ${HOME}/.config/devilspie2
+    cp devilspie2.desktop  ${HOME}/.config/autostart
+}
+
+### Run the command
+command=${1-help}
+shift || true
+func=cmd_"${command}"
+if [ "$(type -t "$func")" == "function" ]; then
+    $func "$@"
+else
+    printf "Unknown command %s\n" "$command"
+    cmd_help
+fi
