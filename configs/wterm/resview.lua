@@ -9,7 +9,7 @@ return {
   initial_rows = 52,
   window_decorations = "NONE",
   default_cursor_style="SteadyUnderline",
-  window_background_opacity = 0.1,
+  window_background_opacity = 0.0,
   keys = {
     {key="c", mods="CTRL", action="Nop"},
   },

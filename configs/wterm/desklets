@@ -1,7 +1,18 @@
 #!/usr/bin/env bash
 script_dir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
 
-killall wezterm-gui
-${script_dir}/resview &
-${script_dir}/weather &
-${script_dir}/jview &
+# killall wezterm-gui
+
+function start() {
+    lua=$1
+    class=$2
+    cmd_to_start=$3
+    wezterm --config-file ${script_dir}/${lua} start \
+        --class ${class} \
+        -- ${cmd_to_start} &
+}
+
+
+start journal.lua rg.wezfurlong.wezlog  'journalctl -f'
+start weather.lua rg.wezfurlong.wezweather "${script_dir}/get_weather"
+start resview.lua rg.wezfurlong.wezres btm
