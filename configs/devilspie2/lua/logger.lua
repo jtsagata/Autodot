@@ -5,5 +5,7 @@ if (get_window_class()=="rg.wezfurlong.wezlog") then
     set_window_below(true)
     stick_window()
     set_window_type("WINDOW_TYPE_DESKTOP")
-    set_window_position2(1920+1920+2560-840 , 1080-window_h-10)
+    x, y, width, height = get_window_geometry();
+    screen_w,screen_h = get_screen_size()
+    set_window_position2(screen_w-width-10 , screen_h-height-10)
 end
