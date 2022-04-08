@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 script_dir=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
-cmd_to_start='journalctl -f'
+cmd_to_start="${script_dir}/get_weather"
 
 # export SYSTEMD_COLORS=false
 function start() {
-    wezterm --config-file ${script_dir}/journal.lua start \
-        --class rg.wezfurlong.wezlog \
+    wezterm --config-file ${script_dir}/weather.lua start \
+        --class rg.wezfurlong.wezweather \
         -- ${cmd_to_start} 
 }
+
 
 # sleep 2
 start

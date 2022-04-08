@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+mins=10
+
+while : 
+do
+    curl --silent http://v2.wttr.in?lang=el
+    sleep $(( 60 * ${mins} ))
+    clear
+done
