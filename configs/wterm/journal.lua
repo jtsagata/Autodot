@@ -11,5 +11,10 @@ return {
   window_background_opacity = 0.1,
   keys = {
     {key="c", mods="CTRL", action="Nop"},
-  }
+  },
+  colors = {
+    cursor_bg = "black",
+    cursor_fg = "black",
+    cursor_border = "black",
+  },
 }
