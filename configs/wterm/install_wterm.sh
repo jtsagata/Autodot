@@ -8,6 +8,7 @@ function cmd_system() {
 function cmd_local() {
     cp jview.desktop  ${HOME}/.config/autostart
     cp desklets.desktop  ${HOME}/.config/autostart
+    ln ${script_dir}/bottom.toml  ${HOME}/.config/bottom/bottom.toml
 }
 
 ### Run the command
