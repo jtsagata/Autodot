@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Exec=/home/asfodelus/Automation/configs/wterm/desklets
+Hidden=false
+NoDisplay=false
+X-GNOME-Autostart-enabled=true
+Name=Not a conky
+Comment=View resources, logs, weather on Monitor 3

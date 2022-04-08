@@ -7,7 +7,7 @@ function cmd_system() {
 
 function cmd_local() {
     cp jview.desktop  ${HOME}/.config/autostart
-    cp weather.desktop  ${HOME}/.config/autostart
+    cp desklets.desktop  ${HOME}/.config/autostart
 }
 
 ### Run the command

@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Exec=/home/asfodelus/Automation/configs/wterm/weather
-Hidden=false
-NoDisplay=false
-X-GNOME-Autostart-enabled=true
-Name=Weather
-Comment=View Weather display 3
