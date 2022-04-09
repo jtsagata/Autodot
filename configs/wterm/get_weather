@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
-mins=10
+mins=30
 
 while : 
 do
-    curl --silent http://v2.wttr.in?lang=el
+    curl --silent http://v2.wttr.in/Irakleion?lang=el | head -n -6 | sed 's/Irakleion/Ηράκλειο /g'
+    # Pihole stats
+    dns_queries_today=$(curl --silent http://192.168.2.10/admin/api.php | jq .dns_queries_today )
+    ads_blocked_today=$(curl --silent http://192.168.2.10/admin/api.php | jq .ads_blocked_today )
+    ads_percentage_today=$(curl --silent http://192.168.2.10/admin/api.php | jq .ads_percentage_today )
+
+    printf "\nPi Hole:\n   DNS Queries: %s    Blocked: %s    Ratio: %s%% " "${dns_queries_today}" "${ads_blocked_today}" "${ads_percentage_today:0:5}"
+
+    # Move cursor away
+    echo -ne "\033[90A"
+
     sleep $(( 60 * ${mins} ))
     clear
 done
