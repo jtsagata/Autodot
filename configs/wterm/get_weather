@@ -12,7 +12,7 @@ do
     printf "\nPi Hole: DNS Queries: %s  Blocked: %s  Ratio: %s%% " "${dns_queries_today}" "${ads_blocked_today}" "${ads_percentage_today:0:5}"
 
     # Move cursor away
-    echo -ne "\033[90A"
+    echo -ne "\033[92A\033[14B"
 
     sleep $(( 60 * ${mins} ))
     clear
