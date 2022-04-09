@@ -9,7 +9,7 @@ do
     ads_blocked_today=$(curl --silent http://192.168.2.10/admin/api.php | jq .ads_blocked_today )
     ads_percentage_today=$(curl --silent http://192.168.2.10/admin/api.php | jq .ads_percentage_today )
 
-    printf "\nPi Hole:\n   DNS Queries: %s    Blocked: %s    Ratio: %s%% " "${dns_queries_today}" "${ads_blocked_today}" "${ads_percentage_today:0:5}"
+    printf "\nPi Hole: DNS Queries: %s  Blocked: %s  Ratio: %s%% " "${dns_queries_today}" "${ads_blocked_today}" "${ads_percentage_today:0:5}"
 
     # Move cursor away
     echo -ne "\033[90A"
