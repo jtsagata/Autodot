@@ -22,4 +22,6 @@ start wez_widget.lua rg.wezfurlong.wezweather "${script_dir}/get_weather"
 start wez_widget.lua rg.wezfurlong.wezres btm
 start wez_widget.lua rg.wezfurlong.wezlog  'journalctl -f'
 
-start wez_widget.lua rg.wezfurlong.wezclock  "${script_dir}/../../extras/peaclock --config=${script_dir}/peaclock.conf  --config-dir=${script_dir}"
+wezterm --config-file  ${script_dir}/wez_widget.lua --config 'font_size=14' start \
+    --class rg.wezfurlong.wezclock  \
+    -- $(realpath ${script_dir}/../../extras/peaclock) --config=${script_dir}/peaclock.conf  --config-dir=${script_dir} &
