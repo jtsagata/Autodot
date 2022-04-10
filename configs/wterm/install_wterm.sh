@@ -8,9 +8,12 @@ function cmd_system() {
 function cmd_local() {
     cp jview.desktop  ${HOME}/.config/autostart
     cp desklets.desktop  ${HOME}/.config/autostart
+    mkdir -p ${HOME}/.config/bottom
     ln ${script_dir}/bottom.toml  ${HOME}/.config/bottom/bottom.toml
     mkdir -p ${HOME}/.config/wezterm
     ln ${script_dir}/wezterm.lua  ${HOME}/.config/wezterm/wezterm.lua
+    mkdir -p ${HOME}/.config/peaclock
+    ln ${script_dir}/peaclock.conf  ${HOME}/.config/peaclock/peaclock.conf
 }
 
 ### Run the command

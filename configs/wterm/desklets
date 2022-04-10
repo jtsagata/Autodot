@@ -24,4 +24,6 @@ start wez_widget.lua rg.wezfurlong.wezlog  'journalctl -f'
 
 wezterm --config-file  ${script_dir}/wez_widget.lua --config 'font_size=14' start \
     --class rg.wezfurlong.wezclock  \
-    -- $(realpath ${script_dir}/../../extras/peaclock) --config=${script_dir}/peaclock.conf  --config-dir=${script_dir} &
+    -- $(realpath ${script_dir}/../../extras/peaclock) \
+           --config=${HOME}/.config/peaclock/peaclock.conf  \
+           --config-dir=${HOME}/.config/peaclock &
