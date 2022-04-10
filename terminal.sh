@@ -5,6 +5,8 @@ if [[ "${TERMINAL_EMULATOR}" == "JetBrains-JediTerm" ]]; then
     terminal_program="JetBrains"
 elif [[ "${TERM_PROGRAM}" == "vscode" ]]; then
      terminal_program="vscode"
+elif [[ "${TERM_PROGRAM}" == "WezTerm" ]]; then
+     terminal_program="WezTerm"
 elif [[ -v INSIDE_NAUTILUS_PYTHON ]]; then
      terminal_program="nautilus"
 else
