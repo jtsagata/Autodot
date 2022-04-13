@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# Hide the cursor
+echo -e "\e[25l"
+
+journalctl -f 

@@ -1,3 +1,5 @@
+local wezterm = require 'wezterm'
+
 return {
   font_size=8,
   bold_brightens_ansi_colors = true,

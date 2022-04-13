@@ -18,9 +18,9 @@ function start() {
 }
 
 
-start wez_widget.lua rg.wezfurlong.wezweather "${script_dir}/get_weather"
+start wez_widget.lua rg.wezfurlong.wezweather "${script_dir}/get_weather2"
 start wez_widget.lua rg.wezfurlong.wezres btm
-start wez_widget.lua rg.wezfurlong.wezlog  'journalctl -f'
+start wez_widget.lua rg.wezfurlong.wezlog   "${script_dir}/get_journal"
 
 wezterm --config-file  ${script_dir}/wez_widget.lua --config 'font_size=14' start \
     --class rg.wezfurlong.wezclock  \

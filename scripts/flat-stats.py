@@ -1,3 +1,5 @@
+#!/usr/bin/python3 
+
 """
 This python script will find flatpak deduplication size stats.
 Made with :heart: by powpingdone#3611, or just powpingdone on github.

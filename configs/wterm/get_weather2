@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 mins=30
-weather_url='http://v2.wttr.in/Irakleion?lang=el'
+weather_url='http://wttr.in/Irakleion?QnF&lang=el'
 
 while : 
 do
-    weather=$(curl --silent $weather_url | head -n -6 | sed 's/Irakleion/Ηράκλειο /g')
+    weather=$(curl --silent $weather_url)
     echo -e "\e[2J"
     printf "%s"  "$weather"
     
